@@ -1,0 +1,36 @@
+name: Deploy Bot
+
+on:
+  push:
+    branches:
+      - main  # Runs when you push code to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Uses Linux environment
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3  # Gets your code
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"  # Uses Python 3.10
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt  # Installs dependencies
+
+    - name: Create Firebase Credentials File
+      run: echo "$FIREBASE_CREDENTIALS_JSON" > firebase_credentials.json
+      env:
+        FIREBASE_CREDENTIALS_JSON: ${{ secrets.FIREBASE_CREDENTIALS_JSON }}
+
+    - name: Run the Bot
+      env:
+        FIREBASE_CREDENTIALS: firebase_credentials.json
+<<<<<<< HEAD
+      run: python MenuKeybaord.py
+=======
+      run: python MenuKeybaord.py
+>>>>>>> e7cf2bf (Added GitHub Actions for Firebase)

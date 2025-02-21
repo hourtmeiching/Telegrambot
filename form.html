@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Form</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button { margin: 10px 0; padding: 10px; width: 100%; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h2>Booking Form</h2>
+    <input type="date" id="date" placeholder="Date">
+    <input type="text" id="name" placeholder="Name">
+    <input type="number" id="rooms" placeholder="Number of Rooms">
+    <input type="tel" id="telephone" placeholder="Telephone">
+    <input type="file" id="photo" accept="image/*">
+    <button onclick="submitForm()">Confirm</button>
+
+    <script>
+        // Initialize Telegram Web App
+        const tg = window.Telegram.WebApp;
+
+        function submitForm() {
+            const data = {
+                date: document.getElementById('date').value,
+                name: document.getElementById('name').value,
+                rooms: document.getElementById('rooms').value,
+                telephone: document.getElementById('telephone').value,
+                photo: document.getElementById('photo').files[0]?.name || "No photo"
+            };
+
+            // Send data back to the bot
+            tg.sendData(JSON.stringify(data));
+            tg.close(); // Close the Web App
+        }
+    </script>
+</body>
+</html>
