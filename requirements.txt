@@ -4,3 +4,6 @@ python-telegram-bot[job-queue]
 mysql-connector-python
 python-dotenv
 firebase-admin
+python-telegram-bot==20.0
+firebase-admin==6.0.0
+
