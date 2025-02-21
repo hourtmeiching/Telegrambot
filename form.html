@@ -1,41 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Telegram Form</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Form</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        input, button { margin: 10px 0; padding: 10px; width: 100%; }
-        button { background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-    </style>
 </head>
 <body>
-    <h2>Booking Form</h2>
-    <input type="date" id="date" placeholder="Date">
-    <input type="text" id="name" placeholder="Name">
-    <input type="number" id="rooms" placeholder="Number of Rooms">
-    <input type="tel" id="telephone" placeholder="Telephone">
-    <input type="file" id="photo" accept="image/*">
-    <button onclick="submitForm()">Confirm</button>
+    <form id="dataForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
 
     <script>
         // Initialize Telegram Web App
         const tg = window.Telegram.WebApp;
 
-        function submitForm() {
-            const data = {
-                date: document.getElementById('date').value,
-                name: document.getElementById('name').value,
-                rooms: document.getElementById('rooms').value,
-                telephone: document.getElementById('telephone').value,
-                photo: document.getElementById('photo').files[0]?.name || "No photo"
-            };
+        // Access user info
+        const user = tg.initDataUnsafe.user;
+        const userId = user?.id;
+        const username = user?.username;
+        const firstName = user?.first_name;
 
-            // Send data back to the bot
-            tg.sendData(JSON.stringify(data));
-            tg.close(); // Close the Web App
-        }
+        // Log user info for debugging
+        console.log("User Info:", { userId, username, firstName });
+
+        // Handle form submission
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            // Include user info in the message
+            const botToken = '7680394855:AAFVjKErGVwWg9bZ49BnChVgCLnv1xA3MRw';
+            const chatId = '8101143576';
+            const message = `
+                New form submission:
+                Name: ${data.name}
+                Email: ${data.email}
+                User Info:
+                Username: ${username || 'N/A'}
+                First Name: ${firstName || 'N/A'}
+                User ID: ${userId || 'N/A'}
+            `;
+
+            // Send the message to your Telegram bot
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            }).then(response => response.json())
+              .then(data => console.log(data))
+              .catch((error) => console.error('Error:', error));
+        });
     </script>
 </body>
 </html>
