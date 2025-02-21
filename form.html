@@ -7,6 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
+    <h2>Fill in Your Details</h2>
     <form id="dataForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br><br>
@@ -18,19 +19,9 @@
     </form>
 
     <script>
-        // Initialize Telegram Web App
         const tg = window.Telegram.WebApp;
+        tg.expand();
 
-        // Access user info
-        const user = tg.initDataUnsafe.user;
-        const userId = user?.id;
-        const username = user?.username;
-        const firstName = user?.first_name;
-
-        // Log user info for debugging
-        console.log("User Info:", { userId, username, firstName });
-
-        // Handle form submission
         document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
@@ -39,32 +30,19 @@
                 data[key] = value;
             });
 
-            // Include user info in the message
-            const botToken = '7680394855:AAFVjKErGVwWg9bZ49BnChVgCLnv1xA3MRw';
-            const chatId = '8101143576';
-            const message = `
-                New form submission:
-                Name: ${data.name}
-                Email: ${data.email}
-                User Info:
-                Username: ${username || 'N/A'}
-                First Name: ${firstName || 'N/A'}
-                User ID: ${userId || 'N/A'}
-            `;
+            const botToken = 'YOUR_BOT_TOKEN';  // Replace with your bot token
+            const chatId = 'YOUR_CHAT_ID';  // Replace with your chat ID
+            const message = `New Form Submission:\nName: ${data.name}\nEmail: ${data.email}`;
 
-            // Send the message to your Telegram bot
             fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: message
-                })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, text: message })
             }).then(response => response.json())
               .then(data => console.log(data))
-              .catch((error) => console.error('Error:', error));
+              .catch(error => console.error('Error:', error));
+
+            alert("Form submitted!");
         });
     </script>
 </body>
